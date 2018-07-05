@@ -90,14 +90,5 @@ public class YandexSpellerApi {
                     .post(YandexSpellerConstants.YANDEX_SPELLER_API_URI)
                     .prettyPeek();
         }
-
-        public Response callApiGet() {
-            return RestAssured.with()
-                    .accept(ContentType.JSON)
-                    .queryParams(spellerApi.params)
-                    .log().all()
-                    .get(YandexSpellerConstants.YANDEX_SPELLER_API_URI)
-                    .prettyPeek();
-        }
     }
 }
