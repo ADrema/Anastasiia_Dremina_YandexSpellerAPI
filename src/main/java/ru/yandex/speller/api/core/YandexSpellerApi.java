@@ -87,7 +87,17 @@ public class YandexSpellerApi {
                     .queryParams(spellerApi.params)
                     .headers("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
                     .log().all()
-                    .post(YandexSpellerConstants.YANDEX_SPELLER_API_URI).prettyPeek();
+                    .post(YandexSpellerConstants.YANDEX_SPELLER_API_URI)
+                    .prettyPeek();
+        }
+
+        public Response callApiGet() {
+            return RestAssured.with()
+                    .accept(ContentType.JSON)
+                    .queryParams(spellerApi.params)
+                    .log().all()
+                    .get(YandexSpellerConstants.YANDEX_SPELLER_API_URI)
+                    .prettyPeek();
         }
     }
 }
