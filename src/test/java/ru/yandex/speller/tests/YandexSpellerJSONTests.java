@@ -1,6 +1,5 @@
 package ru.yandex.speller.tests;
 
-
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
