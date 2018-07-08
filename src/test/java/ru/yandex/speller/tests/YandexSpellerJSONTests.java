@@ -1,7 +1,5 @@
 package ru.yandex.speller.tests;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.*;
 import org.hamcrest.Matchers;
@@ -17,7 +15,6 @@ import static ru.yandex.speller.api.constants.YandexSpellerConstants.*;
 import static ru.yandex.speller.api.enums.LanguagesEnum.INVALID_LANG;
 import static ru.yandex.speller.api.enums.LanguagesEnum.RU;
 import static ru.yandex.speller.api.enums.OptionsEnum.*;
-import static ru.yandex.speller.api.enums.ParametersEnum.*;
 
 public class YandexSpellerJSONTests {
 

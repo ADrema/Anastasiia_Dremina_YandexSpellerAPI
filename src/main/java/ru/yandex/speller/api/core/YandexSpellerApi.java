@@ -9,7 +9,6 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
-import org.apache.http.HttpMessage;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -97,7 +96,7 @@ public class YandexSpellerApi {
                     response = request.params(spellerApi.params)
                             .get(YandexSpellerConstants.YANDEX_SPELLER_API_URI);
                     break;
-                case  HttpPut.METHOD_NAME:
+                case HttpPut.METHOD_NAME:
                     response = request.params(spellerApi.params)
                             .put(YandexSpellerConstants.YANDEX_SPELLER_API_URI);
                     break;
