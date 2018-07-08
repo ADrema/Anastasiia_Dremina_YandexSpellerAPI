@@ -9,7 +9,12 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
+import org.apache.http.HttpMessage;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.client.methods.HttpPut;
 import ru.yandex.speller.api.constants.YandexSpellerConstants;
 import ru.yandex.speller.api.enums.LanguagesEnum;
 
@@ -81,14 +86,36 @@ public class YandexSpellerApi {
             return this;
         }
 
-        public Response callApi() {
-            return RestAssured.with()
+        public Response callApi(String method) {
+            RequestSpecification request = RestAssured.with()
                     .accept(ContentType.JSON)
-                    .queryParams(spellerApi.params)
                     .headers("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
-                    .log().all()
-                    .post(YandexSpellerConstants.YANDEX_SPELLER_API_URI)
-                    .prettyPeek();
+                    .log().all();
+            Response response;
+            switch (method) {
+                case HttpGet.METHOD_NAME:
+                    response = request.params(spellerApi.params)
+                            .get(YandexSpellerConstants.YANDEX_SPELLER_API_URI);
+                    break;
+                case  HttpPut.METHOD_NAME:
+                    response = request.params(spellerApi.params)
+                            .put(YandexSpellerConstants.YANDEX_SPELLER_API_URI);
+                    break;
+                case HttpPatch.METHOD_NAME:
+                    response = request.params(spellerApi.params)
+                            .patch(YandexSpellerConstants.YANDEX_SPELLER_API_URI);
+                    break;
+                case HttpDelete.METHOD_NAME:
+                    response = request.params(spellerApi.params)
+                            .delete(YandexSpellerConstants.YANDEX_SPELLER_API_URI);
+                    break;
+                default:
+                    response = request.queryParams(spellerApi.params)
+                            .post(YandexSpellerConstants.YANDEX_SPELLER_API_URI);
+
+                    break;
+            }
+            return response.prettyPeek();
         }
     }
 }
