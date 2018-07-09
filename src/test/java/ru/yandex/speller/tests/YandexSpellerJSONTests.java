@@ -1,7 +1,7 @@
 package ru.yandex.speller.tests;
 
+import io.restassured.http.Method;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.*;
 import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
 import ru.yandex.speller.api.core.YandexSpellerApi;
@@ -9,8 +9,11 @@ import ru.yandex.speller.api.core.YandexSpellerResponse;
 
 import java.util.List;
 
+import static io.restassured.http.Method.GET;
+import static io.restassured.http.Method.POST;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
 import static ru.yandex.speller.api.constants.YandexSpellerConstants.*;
 import static ru.yandex.speller.api.enums.LanguagesEnum.INVALID_LANG;
 import static ru.yandex.speller.api.enums.LanguagesEnum.RU;
@@ -18,57 +21,16 @@ import static ru.yandex.speller.api.enums.OptionsEnum.*;
 
 public class YandexSpellerJSONTests {
 
-    @Test(description = "POST request. En word without errors")
-    public void sendPostRequest() {
+    @Test(dataProviderClass = HttpMethodsDataProvider.class, dataProvider = "methods provider",
+            description = "Check different methods")
+    public void sendRequest(Method method, int code) {
         YandexSpellerApi.with()
                 .text("Song")
-                .callApi(HttpPost.METHOD_NAME)
-                .then().specification(YandexSpellerApi.successResponse())
-                .assertThat()
-                .body(Matchers.equalTo("[]"));
-    }
-
-    @Test(description = "GET request. En word without errors")
-    public void sendGetRequest() {
-        YandexSpellerApi.with()
-                .text("Song")
-                .callApi(HttpGet.METHOD_NAME)
-                .then().specification(YandexSpellerApi.successResponse())
-                .assertThat()
-                .body(Matchers.equalTo("[]"));
-    }
-
-    @Test(description = "PUT request. Method is not allowed")
-    public void sendPutRequest() {
-        YandexSpellerApi.with()
-                .text("Song")
-                .callApi(HttpPut.METHOD_NAME)
+                .httpMethod(method)
+                .callApi()
                 .then()
                 .assertThat()
-                .statusCode(HttpStatus.SC_METHOD_NOT_ALLOWED)
-                .time(lessThan(5000L));
-    }
-
-    @Test(description = "PATCH request. Method is not allowed")
-    public void sendPatchRequest() {
-        YandexSpellerApi.with()
-                .text("Song")
-                .callApi(HttpPatch.METHOD_NAME)
-                .then()
-                .assertThat()
-                .statusCode(HttpStatus.SC_METHOD_NOT_ALLOWED)
-                .time(lessThan(5000L));
-    }
-
-    @Test(description = "DELETE request. Method is not allowed")
-    public void sendDeleteRequest() {
-        YandexSpellerApi.with()
-                .text("Song")
-                .callApi(HttpDelete.METHOD_NAME)
-                .then()
-                .assertThat()
-                .statusCode(HttpStatus.SC_METHOD_NOT_ALLOWED)
-                .time(lessThan(5000L));
+                .statusCode(code);
     }
 
     @Test(description = "GET request with incorrect Language parameter")
@@ -76,7 +38,8 @@ public class YandexSpellerJSONTests {
         YandexSpellerApi.with()
                 .text("Параллелограмм")
                 .language(INVALID_LANG)
-                .callApi(HttpGet.METHOD_NAME)
+                .httpMethod(GET)
+                .callApi()
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_BAD_REQUEST)
@@ -88,7 +51,8 @@ public class YandexSpellerJSONTests {
         YandexSpellerApi.with()
                 .text(TEXT_WITH_DIGITS)
                 .options(IGNORE_DIGITS.option)
-                .callApi(HttpGet.METHOD_NAME)
+                .httpMethod(GET)
+                .callApi()
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_OK)
@@ -99,7 +63,8 @@ public class YandexSpellerJSONTests {
     @Test(description = "POST request. language: ru, word with capital letters")
     public void capitalizationErrorTest() {
         List<YandexSpellerResponse> response = YandexSpellerApi.getYandexSpellerAnswers(
-                YandexSpellerApi.with().text("парАлЛелограмм").language(RU).options("").callApi(HttpPost.METHOD_NAME)
+                YandexSpellerApi.with().text("парАлЛелограмм").language(RU).options("")
+                        .httpMethod(POST).callApi()
         );
         assertThat(response, Matchers.hasSize(1));
         assertThat(response.get(0).code, equalTo(3));
@@ -112,7 +77,8 @@ public class YandexSpellerJSONTests {
         YandexSpellerApi.with()
                 .text("Параллелограмм")
                 .format("text")
-                .callApi(HttpGet.METHOD_NAME)
+                .httpMethod(GET)
+                .callApi()
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_BAD_REQUEST)
@@ -124,7 +90,9 @@ public class YandexSpellerJSONTests {
     public void checkRepeatWordError() {
         List<YandexSpellerResponse> response = YandexSpellerApi.getYandexSpellerAnswers(
                 YandexSpellerApi.with().text(TEXT_WITH_REPEATED_WORD)
-                        .options(FIND_REPEAT_WORDS.option).callApi(HttpPost.METHOD_NAME)
+                        .options(FIND_REPEAT_WORDS.option)
+                        .httpMethod(POST)
+                        .callApi()
         );
         assertThat(response, Matchers.hasSize(1));
         assertThat(response.get(0).code, equalTo(2));
@@ -135,7 +103,9 @@ public class YandexSpellerJSONTests {
     public void sendTextWithErrors() {
         List<YandexSpellerResponse> response = YandexSpellerApi.getYandexSpellerAnswers(
                 YandexSpellerApi.with().text(TEXT_WITH_ERRORS)
-                        .language(RU).callApi(HttpGet.METHOD_NAME)
+                        .language(RU)
+                        .httpMethod(GET)
+                        .callApi()
         );
         assertThat(response.get(0).code, equalTo(1));
         assertThat(response.get(0).word, equalTo("могазин"));
@@ -150,7 +120,8 @@ public class YandexSpellerJSONTests {
         YandexSpellerApi.with()
                 .text(TEXT_WITH_URL)
                 .options(IGNORE_URLS.option)
-                .callApi(HttpGet.METHOD_NAME)
+                .httpMethod(GET)
+                .callApi()
                 .then().specification(YandexSpellerApi.successResponse())
                 .body(Matchers.equalTo("[]"));
     }
@@ -159,7 +130,9 @@ public class YandexSpellerJSONTests {
     @Test(description = "POST request. URL should be checked")
     public void checkURLTest() {
         List<YandexSpellerResponse> response = YandexSpellerApi.getYandexSpellerAnswers(
-                YandexSpellerApi.with().text(TEXT_WITH_URL).callApi(HttpPost.METHOD_NAME)
+                YandexSpellerApi.with().text(TEXT_WITH_URL)
+                        .httpMethod(POST)
+                        .callApi()
         );
         assertThat(response, Matchers.hasSize(1));
         assertThat(response.get(0).code, equalTo(1));
