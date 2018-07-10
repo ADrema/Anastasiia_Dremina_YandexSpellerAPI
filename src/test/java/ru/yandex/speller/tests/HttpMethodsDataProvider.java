@@ -9,7 +9,7 @@ import static org.apache.http.HttpStatus.SC_OK;
 public class HttpMethodsDataProvider {
 
     @DataProvider(name = "methods provider")
-    public Object[][] methodsdrovider() {
+    public Object[][] methodsProvider() {
         return new Object[][]{
                 {GET, SC_OK},
                 {POST, SC_OK},
