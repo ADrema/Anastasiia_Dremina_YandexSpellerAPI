@@ -24,7 +24,7 @@ import static ru.yandex.speller.api.enums.ParametersEnum.*;
 public class YandexSpellerApi {
 
     private HashMap<String, String> params = new HashMap<String, String>();
-    private Method method = POST;
+    public Method method = POST;
 
     private YandexSpellerApi() {
     }

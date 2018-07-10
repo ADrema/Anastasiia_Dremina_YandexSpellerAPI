@@ -64,7 +64,7 @@ public class YandexSpellerJSONTests {
     public void capitalizationErrorTest() {
         List<YandexSpellerResponse> response = YandexSpellerApi.getYandexSpellerAnswers(
                 YandexSpellerApi.with().text("парАлЛелограмм").language(RU).options("")
-                        .httpMethod(POST).callApi()
+                        .callApi()
         );
         assertThat(response, Matchers.hasSize(1));
         assertThat(response.get(0).code, equalTo(3));
@@ -91,7 +91,6 @@ public class YandexSpellerJSONTests {
         List<YandexSpellerResponse> response = YandexSpellerApi.getYandexSpellerAnswers(
                 YandexSpellerApi.with().text(TEXT_WITH_REPEATED_WORD)
                         .options(FIND_REPEAT_WORDS.option)
-                        .httpMethod(POST)
                         .callApi()
         );
         assertThat(response, Matchers.hasSize(1));
@@ -104,7 +103,6 @@ public class YandexSpellerJSONTests {
         List<YandexSpellerResponse> response = YandexSpellerApi.getYandexSpellerAnswers(
                 YandexSpellerApi.with().text(TEXT_WITH_ERRORS)
                         .language(RU)
-                        .httpMethod(GET)
                         .callApi()
         );
         assertThat(response.get(0).code, equalTo(1));
@@ -131,7 +129,6 @@ public class YandexSpellerJSONTests {
     public void checkURLTest() {
         List<YandexSpellerResponse> response = YandexSpellerApi.getYandexSpellerAnswers(
                 YandexSpellerApi.with().text(TEXT_WITH_URL)
-                        .httpMethod(POST)
                         .callApi()
         );
         assertThat(response, Matchers.hasSize(1));
