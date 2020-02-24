@@ -66,6 +66,7 @@ public class YandexSpellerJSONTests {
                 YandexSpellerApi.with().text("парАлЛелограмм").language(RU).options("")
                         .callApi()
         );
+        //TODO: 0 can be moved to constant
         assertThat(response, Matchers.hasSize(1));
         assertThat(response.get(0).code, equalTo(3));
         assertThat(response.get(0).word, equalTo("парАлЛелограмм"));

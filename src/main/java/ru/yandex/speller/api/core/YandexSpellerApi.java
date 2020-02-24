@@ -22,7 +22,8 @@ import static org.hamcrest.Matchers.lessThan;
 import static ru.yandex.speller.api.enums.ParametersEnum.*;
 
 public class YandexSpellerApi {
-
+    //TODO: 1. do not use particular implementation without necessity.
+    //TODO: 2. No needs to add types into initialization part.
     private HashMap<String, String> params = new HashMap<String, String>();
     public Method method = POST;
 
@@ -36,11 +37,11 @@ public class YandexSpellerApi {
 
     //get ready Speller answers list form api response
     public static List<YandexSpellerResponse> getYandexSpellerAnswers(Response response) {
-        return new Gson().fromJson(response.asString().trim(), new TypeToken<List<YandexSpellerResponse>>() {
+        return new Gson().fromJson(response.asString().trim(), new TypeToken<List<YandexSpellerResponse>>(){
         }.getType());
     }
 
-    //set base request and response specifications tu use in tests
+    //set base request and response specifications to use in tests
     public static ResponseSpecification successResponse() {
         return new ResponseSpecBuilder()
                 .expectContentType(ContentType.JSON)
